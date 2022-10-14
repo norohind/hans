@@ -37,9 +37,9 @@
 #include <signal.h>
 #include <memory>
 
-#ifndef AI_V4MAPPED // Not supported on OpenBSD 6.0
+// #ifndef AI_V4MAPPED // Not supported on OpenBSD 6.0
 #define AI_V4MAPPED 0
-#endif
+// #endif
 
 using std::string;
 

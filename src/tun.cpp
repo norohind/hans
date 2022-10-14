@@ -54,7 +54,7 @@ static void winsystem(char *cmd)
 }
 #endif
 
-#define ip_path "/sbin/ip "
+#define ip_path "/data/data/com.termux/files/usr/bin/ip "
 
 Tun::Tun(const string *device, int mtu)
 {
