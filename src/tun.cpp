@@ -54,6 +54,8 @@ static void winsystem(char *cmd)
 }
 #endif
 
+#define ip_path "/sbin/ip "
+
 Tun::Tun(const string *device, int mtu)
 {
     this->mtu = mtu;
@@ -77,7 +79,9 @@ Tun::Tun(const string *device, int mtu)
             << "\" mtu=" << mtu;
     winsystem(cmdline.str().data());
 #else
-    cmdline << "/sbin/ifconfig " << this->device << " mtu " << mtu;
+    // ip link set dev <device> mtu <mtu>
+    cmdline << ip_path << "link set dev " << this->device << " mtu " << mtu;
+    // cmdline << "/sbin/ifconfig " << this->device << " mtu " << mtu;
     if (system(cmdline.str().data()) != 0)
         syslog(LOG_ERR, "could not set tun device mtu");
 #endif
@@ -102,7 +106,9 @@ void Tun::setIp(uint32_t ip, uint32_t destIp)
     if (!tun_set_ip(fd, ip, ip & 0xffffff00, 0xffffff00))
         syslog(LOG_ERR, "could not set tun device driver ip address: %s", tun_last_error());
 #elif LINUX
-    cmdline << "/sbin/ifconfig " << device << " " << ips << " netmask 255.255.255.0";
+    // ip addr add <ip>/24 dev <device>
+    cmdline << ip_path << "addr add " << ips << "/24 dev " << device;
+    // cmdline << "/sbin/ifconfig " << device << " " << ips << " netmask 255.255.255.0";
     if (system(cmdline.str().data()) != 0)
         syslog(LOG_ERR, "could not set tun device ip address");
 #else
